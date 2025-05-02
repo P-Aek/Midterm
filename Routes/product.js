@@ -3,7 +3,7 @@ const { ListProducts, ListOneProduct, UpdateProduct, CreateProduct, DeleteProduc
 const { AuthCheck, CheckAdmin } = require('../Middlewares/auth');
 const router = express.Router();
 
-
+// product
 router.get('/products/:count' , AuthCheck , ListProducts); // List count products
 router.get('/product/:id' , AuthCheck , ListOneProduct); // List a single product
 // Admin Only

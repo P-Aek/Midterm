@@ -3,7 +3,7 @@ const { Register, Login, Logout, CurrentUser, UpdatePassword, RecieveOTP, Verify
 const { AuthCheck, CheckAdmin } = require('../Middlewares/auth');
 const router = express.Router();
 
-
+// auth
 router.post('/register' , Register);
 router.post('/login' , Login);
 router.post('/logout' , Logout);

@@ -3,7 +3,7 @@ const { ListOrders, GetOrder, CreateOrder, ChangeOrderStatus, DeleteOrder } = re
 const { AuthCheck, CheckAdmin } = require('../Middlewares/auth');
 const router = express.Router();
 
-
+// order
 router.get('/orders', AuthCheck , CheckAdmin ,  ListOrders) // List all orders, only accessible by admin
 router.get('/orders/:user_id', AuthCheck , GetOrder) // Get a specific order by ID, accessible by all authenticated users
 router.post('/orders/:user_id', AuthCheck , CreateOrder) // Create a new order, accessible by all authenticated users

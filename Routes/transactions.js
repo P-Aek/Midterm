@@ -3,6 +3,7 @@ const { createTransaction, getTransactionById } = require('../Controllers/transa
 const { AuthCheck } = require('../Middlewares/auth');
 const router = express.Router();
 
+// transaction
 router.post('/transaction/:user_id' , AuthCheck, createTransaction); // create transaction
 router.get('/transaction/:user_id/:transaction_id' , AuthCheck, getTransactionById); // get transaction by id
 
