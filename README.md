@@ -19,6 +19,9 @@ A comprehensive product management system built with Node.js and Express.js, fea
 - **Development**: Nodemon
 - **Utilities**: dotenv, cors, morgan
 
+## ER Diagram
+![alt text](image.png)
+
 ## API Endpoints
 
 ### Authentication
