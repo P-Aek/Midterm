@@ -1,11 +1,52 @@
 const prisma = require("../Config/prisma");
 
 exports.ListOrders = async (req, res) => {
-  res.send("List Orders");
+  try {
+    const orders = await prisma.orders.findMany({
+      include: {
+        items: true,
+        user: true
+      },
+      orderBy: {
+        order_date: 'desc'
+      }
+    });
+    
+    res.status(200).json(orders);
+  } catch (error) {
+    res.status(500).json({ error: 'Error retrieving orders' });
+  }
 };
 
 exports.GetOrder = async (req, res) => {
-  res.send("Get Order");
+  const userId = parseInt(req.params.user_id);
+
+  if (isNaN(userId)) {
+    return res.status(400).json({ error: 'Invalid User ID' });
+  }
+
+  try {
+    const orders = await prisma.orders.findMany({
+      where: {
+        user_id: userId
+      },
+      include: {
+        items: true,
+        user: true
+      },
+      orderBy: {
+        order_date: 'desc'
+      }
+    });
+
+    if (!orders.length) {
+      return res.status(404).json({ message: 'No orders found for this user' });
+    }
+
+    res.status(200).json(orders);
+  } catch (error) {
+    res.status(500).json({ error: 'Error retrieving orders' });
+  }
 };
 
 exports.CreateOrder = async (req, res) => {
@@ -153,9 +194,58 @@ exports.CreateOrder = async (req, res) => {
 };
 
 exports.ChangeOrderStatus = async (req, res) => {
-  res.send("Change Order Status");
+  const orderId = parseInt(req.params.order_id);
+
+  if (isNaN(orderId)) {
+    return res.status(400).json({ error: 'Invalid Order ID' });
+  }
+
+  try {
+    const updatedOrder = await prisma.orders.update({
+      where: {
+        order_id: orderId
+      },
+      data: {
+        order_status: 'paid'
+      },
+      include: {
+        items: true,
+        user: true
+      }
+    });
+
+    if (!updatedOrder) {
+      return res.status(404).json({ error: 'Order not found' });
+    }
+
+    res.status(200).json(updatedOrder);
+  } catch (error) {
+    res.status(500).json({ error: 'Error updating order status' });
+  }
 };
 
 exports.DeleteOrder = async (req, res) => {
-  res.send("Delete Order");
+  const userId = parseInt(req.params.user_id);
+
+  if (isNaN(userId)) {
+    return res.status(400).json({ error: 'Invalid User ID' });
+  }
+
+  try {
+    // Delete only pending orders for the user
+    const deletedOrders = await prisma.orders.deleteMany({
+      where: {
+        user_id: userId,
+        order_status: 'pending'
+      }
+    });
+
+    if (deletedOrders.count === 0) {
+      return res.status(404).json({ message: 'No pending orders found for this user' });
+    }
+
+    res.status(200).json({ message: `Deleted ${deletedOrders.count} pending orders` });
+  } catch (error) {
+    res.status(500).json({ error: 'Error deleting orders' });
+  }
 };
